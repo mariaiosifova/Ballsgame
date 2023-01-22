@@ -11,9 +11,9 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 public class OnDraw extends View {
+    Bitmap image;
     int x = 300;//начальная координата шарика по х
     int y = 900;//начальная координата шарика по у
     int xx = 400;//начальная координата картинки по х
@@ -32,48 +32,48 @@ public class OnDraw extends View {
     int Ty = -1;//создание переменной для определения куда нажал пользователь по у
     static int score = 0;//создание счётчика
     static int recordscore = 0;//создание счетчика рекордного значения
-    static int counter = 0;
+    static int count = 0;
     Paint fontPaint;//создание объекта класса пэинт
     MediaPlayer mp;
+
     public OnDraw(Context context) {
         super(context);
         fontPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         fontPaint.setTextSize(75);
         fontPaint.setStyle(Paint.Style.FILL);
-        fontPaint.setTypeface(Typeface.create("Arial",Typeface.ITALIC));
+        fontPaint.setTypeface(Typeface.create("Arial", Typeface.ITALIC));
         MainLoop m = new MainLoop();
         m.execute();
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Tx = (int)event.getX();
-        Ty = (int)event.getY();
+        Tx = (int) event.getX();
+        Ty = (int) event.getY();
+        // Двигаем ракетки | Правая
         if ((Tx > getWidth() / 2) && (Ty > getHeight() / 2)) {
             if (ryy2 < getHeight()) {
                 ry2 += 100;
                 ryy2 += 100;
-                invalidate();
             }
         }
         if ((Tx > getWidth() / 2) && (Ty < getHeight() / 2)) {
             if (ryy2 > 200) {
                 ry2 -= 100;
                 ryy2 -= 100;
-                invalidate();
             }
         }
-        if ((Tx < getWidth()/ 2) && (Ty > getHeight() / 2)){
+        //  Двигаем ракетки | Левая.
+        if ((Tx < getWidth() / 2) && (Ty > getHeight() / 2)) {
             if (ryy1 < getHeight()) {
                 ry1 += 100;
                 ryy1 += 100;
-                invalidate();
             }
         }
-        if ((Tx < getWidth()/ 2) && (Ty < getHeight() / 2)) {
+        if ((Tx < getWidth() / 2) && (Ty < getHeight() / 2)) {
             if (ryy1 > 200) {
                 ry1 -= 100;
                 ryy1 -= 100;
-                invalidate();
             }
         }
 
@@ -85,19 +85,20 @@ public class OnDraw extends View {
         super.onDraw(canvas);
         Paint p = new Paint();
         //задний фон
-        Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.grasssmall);
+        //Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.grasssmall);
         //Bitmap image3 = BitmapFactory.decodeResource(getResources(), R.drawable.see);
-        if ((counter >= 10) && (counter <= 20)) {
-            //Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.grass);
+        if (count >= 10 && count <= 20) {
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.grasssmall);
             image = image.createScaledBitmap(image, getWidth(), getHeight(), false);
             canvas.drawBitmap(image, 0, 0, p);
         }
-        if (counter > 20) {
-            counter = 0;
+        if (count > 20) {
+            count = 0;
         }
-        if (counter < 10) {
-            image = image.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.see), getWidth(), getHeight(), false);
-            canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.see), 0, 0, p);
+        if (count >= 0 && count < 10) {
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.see);
+            image = image.createScaledBitmap(image, getWidth(), getHeight(), false);
+            canvas.drawBitmap(image, 0, 0, p);
         }
 
 //        Bitmap image2 = BitmapFactory.decodeResource(getResources(), R.drawable.grasssmall);
@@ -108,7 +109,7 @@ public class OnDraw extends View {
 //        //canvas.drawBitmap(image3, 0, 0, p);
 
         Bitmap image1 = BitmapFactory.decodeResource(getResources(), R.drawable.soccerball);
-        image1 = image.createScaledBitmap(image1, 150, 150, false);
+        image1 = Bitmap.createScaledBitmap(image1, 150, 150, false);
         canvas.drawBitmap(image1, x, y, p);
         //p.setColor(0xFFAA0000);//делает шарик красным
         //canvas.drawColor(Color.GRAY);//делает фон серым
@@ -124,6 +125,7 @@ public class OnDraw extends View {
         canvas.drawRect(getWidth() - 75, ry2, getWidth(), ryy2, p);
         //canvas.drawBitmap(image, xx - image.getWidth(), yy - image.getHeight(), p);
     }
+
     class MainLoop extends AsyncTask{
 
         @Override
@@ -131,18 +133,18 @@ public class OnDraw extends View {
             boolean b = true;
 
             while (b) {
-                if(y + 75 > getHeight()) { //отталкивается от нижней стенки
+                if (y + 75 > getHeight()) { //отталкивается от нижней стенки
                     vy = -vy;
-                    counter += 1;
+                    count += 1;
                 }
                 if (y - 75 < 0) { //отталкивется верхней стенки
                     vy = -vy;
-                    counter += 1;
+                    count += 1;
                 }
                 if (x + 150 + 85 > getWidth()) {
                     if (y >= ry2 && y <= ryy2) { //отталкивается от правой стенки
                         vx = -vx;
-                        counter += 1;
+                        count += 1;
                     }
 
                 }
@@ -150,20 +152,20 @@ public class OnDraw extends View {
                     x = 500;
                     y = 900;
                     vx = -vx;
-                    counter += 1;
+                    count += 1;
                 }
 
                 if (x - 150 < 0) {//отталкивается от левой стенки
                     if (y >= ry1 && y <= ryy1) {
                         vx = -vx;
-                        counter += 1;
+                        count += 1;
                     }
                 }
                 if (x < 0) {
                     x = 300;
                     y = 700;
                     vx = -vx;
-                    counter += 1;
+                    count += 1;
                 }
 //                if ((y > ry2) && (y < ryy2)) {
 //                    vx = -vx;
@@ -181,5 +183,5 @@ public class OnDraw extends View {
         }
             return null;
             }
-                }
-                }
+        }
+    }
