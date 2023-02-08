@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new OnDraw(this));
+        setContentView(new OnDraw1(this));
         //mp = MediaPlayer.create(this, R.raw.failsound);
 
 
