@@ -24,9 +24,9 @@ public class OnDraw1 extends View {
     volatile int vy = 5 + (int) (Math.random() * 10);//скорость шарика по у
     int r = 50;//радиус кружочка
     volatile int Tx = -1,Ty = -1;//создание переменной для определения куда нажал пользователь по х,y
-    static int score = 0;//создание счётчика
-    static int recordscore = 0;//создание счетчика рекордного значения
     static int counter = 0;
+    static int count_result1 = 0;
+    static int count_result2 = 0;
     Paint fontPaint;//создание объекта класса пэинт
     MediaPlayer mp;
 
@@ -38,6 +38,7 @@ public class OnDraw1 extends View {
         fontPaint.setTextSize(75);
         fontPaint.setStyle(Paint.Style.FILL);
         fontPaint.setTypeface(Typeface.create("Arial", Typeface.ITALIC));
+
         image1 = BitmapFactory.decodeResource(getResources(), R.drawable.soccerball);
         image1 = Bitmap.createScaledBitmap(image1, 150, 150, false);
         image2 = BitmapFactory.decodeResource(getResources(), R.drawable.grasssmall);
@@ -105,6 +106,12 @@ public class OnDraw1 extends View {
         p.setColor(Color.BLUE);
         canvas.drawRect(0, ry1, 50, ryy1, p);//переделать
         canvas.drawRect(getWidth() - 50, ry2, getWidth(), ryy2, p);
+        //fontPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        p.setTextSize(75);
+        p.setStyle(Paint.Style.FILL);
+        p.setTypeface(Typeface.create("Arial", Typeface.ITALIC));
+        canvas.drawText("Счет первого игрока "+count_result1,20, 55, p);
+        canvas.drawText("Счет второго игрока "+count_result2, 20, 110, p);
     }
 
     class MainLoop extends AsyncTask {
@@ -126,35 +133,26 @@ public class OnDraw1 extends View {
                     if (y_ >= ry2 && y_ <= ryy2) { //отталкивается от правой стенки
                         vx = -vx;
                         counter++;
+                        count_result2++;
                     } else {
                         x = 500;
                         y = 900;
                         vx = -vx;
+                        count_result2 = 0;
                     }
                 }
-//                if (x + 75 > getWidth()) { // тут была проблема
-//                    x = 500;
-//                    y = 900;
-//                    vx = -vx;
-//                }
                 if (x_ - image1.getWidth()/2 < 0) {//отталкивается от левой стенки
                     if (y_ >= ry1 && y_ <= ryy1) {
                         vx = -vx;
                         counter++;
+                        count_result1++;
                     }else {
                         x = 300;
                         y = 700;
                         vx = -vx;
+                        count_result1 = 0;
                     }
                 }
-//                if (x < 0) {   // тут была проблема
-//                    x = 300;
-//                    y = 700;
-//                    vx = -vx;
-//                }
-//                if ((y > ry2) && (y < ryy2)) {
-//                    vx = -vx;
-//                }
                 x += vx;
                 y += vy;
                 invalidate();
